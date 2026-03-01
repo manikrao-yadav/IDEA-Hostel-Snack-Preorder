@@ -8,7 +8,25 @@ Students select quantities within a deadline, and mess staff view aggregated dem
 This is a front-end prototype built to validate the workflow and product logic — not a production-ready system.
 
 ---
+## 🖼️ UI Preview
 
+### 👨‍🍳 Staff Dashboard
+
+<p align="center">
+  <img src="Staff-Ui.PNG" width="85%" />
+</p>
+
+> Staff can set the snack item, define the deadline, and view total demand and student count.
+
+---
+
+### 🎓 Student Dashboard
+
+<p align="center">
+  <img src="Student-Ui.PNG" width="85%" />
+</p>
+
+---
 ## 🎯 Problem Being Solved
 
 Hostel snacks are typically prepared assuming one item per student, which leads to:
