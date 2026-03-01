@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Snack Pre-Order System</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Karla:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2d5016;
+            --primary-light: #4a7c2a;
+            --accent: #f4a261;
+            --bg: #faf8f3;
+            --surface: #ffffff;
+            --text: #1a1a1a;
+            --text-light: #666;
+            --border: #e0ddd4;
+            --shadow: rgba(45, 80, 22, 0.08);
+            --error: #d64545;
+        }
+
+        body {
+            font-family: 'Karla', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(45, 80, 22, 0.02) 2px, rgba(45, 80, 22, 0.02) 4px);
+        }
+
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 12px var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 255, 255, 0.03) 10px,
+                rgba(255, 255, 255, 0.03) 20px
+            );
+            pointer-events: none;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.75rem;
+            font-weight: 400;
+            letter-spacing: -0.5px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.95;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Karla', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .main-content {
+            flex: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            width: 100%;
+        }
+
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .login-box {
+            background: var(--surface);
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px var(--shadow);
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid var(--border);
+        }
+
+        .login-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .login-subtitle {
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            background: var(--surface);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Karla', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            color: var(--text);
+        }
+
+        .role-btn.active {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+        }
+
+        .role-btn:hover:not(.active) {
+            border-color: var(--primary-light);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Karla', sans-serif;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: var(--bg);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Karla', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--shadow);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 16px var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .card-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .snack-display {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .snack-display::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(255, 255, 255, 0.05) 20px,
+                rgba(255, 255, 255, 0.05) 40px
+            );
+            pointer-events: none;
+        }
+
+        .snack-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .snack-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .snack-date {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            position: relative;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .qty-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid var(--primary);
+            background: var(--surface);
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn:hover:not(:disabled) {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .qty-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .qty-display {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3rem;
+            color: var(--primary);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .deadline-info {
+            background: var(--accent);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .deadline-info.expired {
+            background: var(--error);
+        }
+
+        .success-message {
+            background: var(--primary-light);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 1rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .stat-value {
+            font-family: 'DM Serif Display', serif;
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.95;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .no-snack {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .no-snack-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .datetime-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Karla', sans-serif;
+            font-size: 1rem;
+            background: var(--bg);
+        }
+
+        .datetime-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .snack-name {
+                font-size: 2rem;
+            }
+
+            .qty-display {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Initialize localStorage with default data if empty
+        const initializeData = () => {
+            if (!localStorage.getItem('snackData')) {
+                localStorage.setItem('snackData', JSON.stringify({
+                    snackItem: '',
+                    deadline: '',
+                    orders: {}
+                }));
+            }
+        };
+
+        const App = () => {
+            const [currentUser, setCurrentUser] = useState(null);
+            const [role, setRole] = useState('student');
+
+            useEffect(() => {
+                initializeData();
+            }, []);
+
+            const handleLogin = (username, userRole) => {
+                setCurrentUser({ username, role: userRole });
+            };
+
+            const handleLogout = () => {
+                setCurrentUser(null);
+            };
+
+            if (!currentUser) {
+                return <LoginPage onLogin={handleLogin} />;
+            }
+
+            return (
+                <div className="app-container">
+                    <Header user={currentUser} onLogout={handleLogout} />
+                    {currentUser.role === 'student' ? (
+                        <StudentDashboard username={currentUser.username} />
+                    ) : (
+                        <StaffDashboard />
+                    )}
+                </div>
+            );
+        };
+
+        const Header = ({ user, onLogout }) => (
+            <header className="header">
+                <div className="header-content">
+                    <div className="logo">🍱 Hostel Snacks</div>
+                    <div className="user-info">
+                        <span>{user.username} ({user.role === 'student' ? 'Student' : 'Mess Staff'})</span>
+                        <button className="btn-logout" onClick={onLogout}>Logout</button>
+                    </div>
+                </div>
+            </header>
+        );
+
+        const LoginPage = ({ onLogin }) => {
+            const [role, setRole] = useState('student');
+            const [username, setUsername] = useState('');
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                if (username.trim()) {
+                    onLogin(username.trim(), role);
+                }
+            };
+
+            return (
+                <div className="login-container">
+                    <div className="login-box">
+                        <h1 className="login-title">Hostel Snacks</h1>
+                        <p className="login-subtitle">Pre-order your daily snacks</p>
+                        
+                        <div className="role-selector">
+                            <button 
+                                className={`role-btn ${role === 'student' ? 'active' : ''}`}
+                                onClick={() => setRole('student')}
+                            >
+                                Student
+                            </button>
+                            <button 
+                                className={`role-btn ${role === 'staff' ? 'active' : ''}`}
+                                onClick={() => setRole('staff')}
+                            >
+                                Mess Staff
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label className="form-label">Username</label>
+                                <input 
+                                    type="text" 
+                                    className="form-input"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    placeholder="Enter your username"
+                                    required
+                                />
+                            </div>
+                            <button type="submit" className="btn-primary">
+                                Login
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            );
+        };
+
+        const StudentDashboard = ({ username }) => {
+            const [snackData, setSnackData] = useState(null);
+            const [quantity, setQuantity] = useState(1);
+            const [showSuccess, setShowSuccess] = useState(false);
+            const [isExpired, setIsExpired] = useState(false);
+
+            useEffect(() => {
+                loadSnackData();
+                const interval = setInterval(loadSnackData, 30000); // Refresh every 30 seconds
+                return () => clearInterval(interval);
+            }, [username]);
+
+            const loadSnackData = () => {
+                const data = JSON.parse(localStorage.getItem('snackData'));
+                setSnackData(data);
+
+                if (data.deadline) {
+                    const deadlineTime = new Date(data.deadline).getTime();
+                    const now = Date.now();
+                    setIsExpired(now > deadlineTime);
+                }
+
+                // Load user's saved quantity or default to 1
+                if (data.orders && data.orders[username]) {
+                    setQuantity(data.orders[username]);
+                } else {
+                    setQuantity(1);
+                }
+            };
+
+            const handleQuantityChange = (delta) => {
+                const newQty = Math.max(1, Math.min(3, quantity + delta));
+                setQuantity(newQty);
+            };
+
+            const handleSubmit = () => {
+                const data = JSON.parse(localStorage.getItem('snackData'));
+                data.orders = data.orders || {};
+                data.orders[username] = quantity;
+                localStorage.setItem('snackData', JSON.stringify(data));
+                
+                setShowSuccess(true);
+                setTimeout(() => setShowSuccess(false), 3000);
+            };
+
+            if (!snackData || !snackData.snackItem) {
+                return (
+                    <main className="main-content">
+                        <div className="card">
+                            <div className="no-snack">
+                                <div className="no-snack-icon">🍽️</div>
+                                <h2>No Snack Available Yet</h2>
+                                <p>The mess staff hasn't set tomorrow's snack item yet. Check back later!</p>
+                            </div>
+                        </div>
+                    </main>
+                );
+            }
+
+            const tomorrowDate = new Date();
+            tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+            const dateStr = tomorrowDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+
+            const deadlineDate = snackData.deadline ? new Date(snackData.deadline) : null;
+            const deadlineStr = deadlineDate ? deadlineDate.toLocaleString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            }) : 'Not set';
+
+            return (
+                <main className="main-content">
+                    <div className="snack-display">
+                        <div className="snack-label">Tomorrow's Snack</div>
+                        <div className="snack-name">{snackData.snackItem}</div>
+                        <div className="snack-date">{dateStr}</div>
+                    </div>
+
+                    {deadlineDate && (
+                        <div className={`deadline-info ${isExpired ? 'expired' : ''}`}>
+                            {isExpired 
+                                ? `Order deadline has passed (was ${deadlineStr})`
+                                : `Order deadline: ${deadlineStr}`
+                            }
+                        </div>
+                    )}
+
+                    <div className="card">
+                        <h2 className="card-title">Your Order</h2>
+                        
+                        <div className="quantity-selector">
+                            <button 
+                                className="qty-btn" 
+                                onClick={() => handleQuantityChange(-1)}
+                                disabled={isExpired || quantity <= 1}
+                            >
+                                −
+                            </button>
+                            <div className="qty-display">{quantity}</div>
+                            <button 
+                                className="qty-btn" 
+                                onClick={() => handleQuantityChange(1)}
+                                disabled={isExpired || quantity >= 3}
+                            >
+                                +
+                            </button>
+                        </div>
+
+                        <button 
+                            className="btn-primary" 
+                            onClick={handleSubmit}
+                            disabled={isExpired}
+                        >
+                            {isExpired ? 'Deadline Passed' : 'Submit Order'}
+                        </button>
+
+                        {showSuccess && (
+                            <div className="success-message">
+                                ✓ Order submitted successfully! Quantity: {quantity}
+                            </div>
+                        )}
+
+                        {isExpired && (
+                            <div style={{ marginTop: '1rem', textAlign: 'center', color: 'var(--text-light)', fontSize: '0.9rem' }}>
+                                Your last saved quantity ({quantity}) will be used.
+                            </div>
+                        )}
+                    </div>
+                </main>
+            );
+        };
+
+        const StaffDashboard = () => {
+            const [snackItem, setSnackItem] = useState('');
+            const [deadline, setDeadline] = useState('');
+            const [showSuccess, setShowSuccess] = useState(false);
+            const [snackData, setSnackData] = useState(null);
+
+            useEffect(() => {
+                loadSnackData();
+                const interval = setInterval(loadSnackData, 30000);
+                return () => clearInterval(interval);
+            }, []);
+
+            const loadSnackData = () => {
+                const data = JSON.parse(localStorage.getItem('snackData'));
+                setSnackData(data);
+                if (data.snackItem) setSnackItem(data.snackItem);
+                if (data.deadline) setDeadline(data.deadline);
+            };
+
+            const handleSubmit = (e) => {
+                e.preventDefault();
+                const data = JSON.parse(localStorage.getItem('snackData'));
+                data.snackItem = snackItem;
+                data.deadline = deadline;
+                localStorage.setItem('snackData', JSON.stringify(data));
+                
+                setShowSuccess(true);
+                setTimeout(() => setShowSuccess(false), 3000);
+                loadSnackData();
+            };
+
+            const getTotalQuantity = () => {
+                if (!snackData || !snackData.orders) return 0;
+                return Object.values(snackData.orders).reduce((sum, qty) => sum + qty, 0);
+            };
+
+            const getTotalStudents = () => {
+                if (!snackData || !snackData.orders) return 0;
+                return Object.keys(snackData.orders).length;
+            };
+
+            // Set default deadline to tomorrow 8 PM
+            useEffect(() => {
+                if (!deadline) {
+                    const tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    tomorrow.setHours(20, 0, 0, 0);
+                    const defaultDeadline = tomorrow.toISOString().slice(0, 16);
+                    setDeadline(defaultDeadline);
+                }
+            }, []);
+
+            return (
+                <main className="main-content">
+                    <div className="card">
+                        <h2 className="card-title">Set Tomorrow's Snack</h2>
+                        <form onSubmit={handleSubmit}>
+                            <div className="form-group">
+                                <label className="form-label">Snack Item</label>
+                                <input 
+                                    type="text" 
+                                    className="form-input"
+                                    value={snackItem}
+                                    onChange={(e) => setSnackItem(e.target.value)}
+                                    placeholder="e.g., Samosa, Sandwich, Pakora"
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Order Deadline</label>
+                                <input 
+                                    type="datetime-local" 
+                                    className="datetime-input"
+                                    value={deadline}
+                                    onChange={(e) => setDeadline(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <button type="submit" className="btn-primary">
+                                Update Snack & Deadline
+                            </button>
+                            {showSuccess && (
+                                <div className="success-message">
+                                    ✓ Snack item and deadline updated successfully!
+                                </div>
+                            )}
+                        </form>
+                    </div>
+
+                    <div className="card">
+                        <h2 className="card-title">Order Summary</h2>
+                        {snackData && snackData.snackItem ? (
+                            <>
+                                <div style={{ 
+                                    background: 'var(--bg)', 
+                                    padding: '1.5rem', 
+                                    borderRadius: '8px',
+                                    marginBottom: '1.5rem',
+                                    border: '1px solid var(--border)'
+                                }}>
+                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-light)', marginBottom: '0.25rem' }}>
+                                        Current Snack Item
+                                    </div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: '700', color: 'var(--primary)' }}>
+                                        {snackData.snackItem}
+                                    </div>
+                                </div>
+                                <div className="stats-grid">
+                                    <div className="stat-card">
+                                        <span className="stat-value">{getTotalQuantity()}</span>
+                                        <span className="stat-label">Total Quantity</span>
+                                    </div>
+                                    <div className="stat-card">
+                                        <span className="stat-value">{getTotalStudents()}</span>
+                                        <span className="stat-label">Students Ordered</span>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-light)' }}>
+                                No snack item set yet. Please add tomorrow's snack above.
+                            </div>
+                        )}
+                    </div>
+                </main>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
