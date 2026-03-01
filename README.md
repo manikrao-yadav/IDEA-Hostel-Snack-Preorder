@@ -1,5 +1,9 @@
 # 🥪 Hostel Snack Pre-Order System (MVP)
 
+## 🌐 Live Demo
+
+[🚀 View Live Project](https://manikrao-yadav.github.io/IDEA-Hostel-Snack-Preorder/)
+
 ## 📌 Project Overview
 
 A functional MVP of a hostel snack pre-order system that captures real demand before preparation.  
